@@ -1,50 +1,51 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Constitution: Hackathon II – Evolution of Todo (Spec-Driven Development)
 
-## Core Principles
+## Purpose
+This Constitution defines the non-negotiable principles, constraints, and rules that govern the entire project lifecycle for the Hackathon II – Evolution of Todo project.
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+## Constitution Principles
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### 1. Spec-Driven First
+- No code may be written before a complete and approved specification.
+- Development must strictly follow: Constitution → Specification → Plan → Tasks → Implementation.
+- All changes must be traceable back to an approved specification.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### 2. No Vibe Coding
+- Requirements must never be assumed.
+- Missing or unclear information must be clarified before proceeding.
+- When in doubt, ask for clarification rather than making assumptions.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### 3. Phase Discipline
+- The project must evolve strictly phase-by-phase.
+- No future-phase features may be introduced early.
+- Each phase must be completed before moving to the next.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### 4. Traceability
+- Every implementation detail must map back to an explicit task and specification.
+- If it is not in the spec, it must not be implemented.
+- All code changes must have a clear link to documented requirements.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### 5. Technology Constraints
+- Phase I: Python 3.13+, console-based, in-memory storage only.
+- Only free-tier and open-source tools are allowed.
+- Any technology decisions must align with the current phase constraints.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### 6. Simplicity Over Cleverness
+- Prefer clarity, readability, and maintainability.
+- Avoid unnecessary abstractions.
+- Choose the simplest solution that meets the requirements.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### 7. Agent Behavior Rules
+- The agent must stop and ask questions when uncertain.
+- The agent must not exceed the approved scope.
+- When encountering ambiguous requirements, the agent must seek clarification.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### 8. Documentation First
+- Constitution, specifications, and plans are first-class artifacts.
+- Documentation must reflect actual system behavior.
+- All significant decisions must be recorded in appropriate documentation.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
-
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+## Enforcement
+- All team members and AI agents must adhere to these principles.
+- Violations of these principles require explicit approval from project stakeholders.
+- Deviations from the constitution must be documented and justified.
