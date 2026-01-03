@@ -1,135 +1,120 @@
-# Phase III – AI-Enhanced Todo Backend API
+# Sumbul Zaheer - AI Agent Todo App
 
-## Overview
-This project is Phase III of the "Evolution of Todo App" built using
-Spec-Driven Development. Phase III introduces AI/RAG capabilities to the
-persistent API-based backend service from Phase II, while preserving all
-previous functionality.
+A sophisticated todo application with AI-powered features, built using FastAPI, SQLAlchemy, and Hugging Face models.
 
 ## Features
-- All functionality from Phase I & II (persistent storage, REST API)
-- AI-based task recommendations
-- Natural language querying of tasks
-- Contextual answers based on user tasks
-- AI summaries of completed tasks
+
+- **AI-Powered Task Management**: Automatically categorizes tasks as Work, Personal, or Urgent
+- **Smart Summaries**: Generates intelligent summaries of your tasks using LLMs
+- **AI Assistant**: Interactive chat interface to ask questions about your tasks
+- **Modern UI/UX**: Clean, responsive design with Slate and Indigo color palette
+- **Full CRUD Operations**: Create, read, update, and delete tasks
+- **Real-time Updates**: UI updates automatically when tasks change
 
 ## Tech Stack
-- Python 3.13+
-- FastAPI
-- SQLAlchemy
-- SQLite (persistent storage)
-- LangChain (RAG implementation)
-- OpenAI API, Anthropic (Claude), or local models
-- Qdrant (vector database)
-- Free-tier / open-source tools only
 
-## How to Run the Backend
+- **Backend**: FastAPI, SQLAlchemy
+- **Frontend**: HTML, CSS, JavaScript with Tailwind CSS
+- **Database**: SQLite
+- **AI Integration**: Hugging Face Inference API
+- **Vector Storage**: Qdrant for RAG functionality
 
-1. Clone the repository
+## Installation
+
+1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <project-folder>
+   git clone https://github.com/SUMBULZAHEER007/ai-agent-todo-app.git
    ```
 
-2. Create and activate a virtual environment
+2. Navigate to the project directory:
+   ```bash
+   cd ai-agent-todo-app
+   ```
+
+3. Create a virtual environment:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate     # Windows
    ```
 
-3. Install dependencies
+4. Activate the virtual environment:
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+
+5. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up environment variables
-   ```bash
-   # Create a .env file with your API keys:
-   OPENAI_API_KEY=your_openai_api_key_here
-   # Or to use local models:
-   USE_LOCAL_MODEL=true
-   # LOCAL_MODEL_PATH=path_to_local_model (if using local models)
+6. Create a `.env` file in the root directory with your Hugging Face token:
+   ```
+   HUGGINGFACEHUB_API_TOKEN=your_huggingface_token_here
    ```
 
-5. Run the API server
+7. Run the application:
    ```bash
-   uvicorn my_todo_app.main:app --reload
+   python main.py
    ```
 
-6. Open the API docs
-   ```
-   http://127.0.0.1:8000/docs
-   ```
+8. Open your browser and go to `http://127.0.0.1:8000`
+
+## Usage
+
+1. Add tasks using the "Add Task" form
+2. Mark tasks as complete/incomplete using the checkboxes
+3. Delete tasks using the trash icon
+4. Click "Regenerate Summary" to get an AI-generated summary of your tasks
+5. Use the "AI Assistant" button to chat with the AI about your tasks
+
+## AI Features
+
+### Auto-Categorization
+Tasks are automatically categorized based on keywords:
+- **Work**: meetings, projects, reports, emails, presentations, clients
+- **Personal**: family, friends, shopping, appointments, doctors
+- **Urgent**: urgent, asap, immediately, today, now, critical, important
+
+### Smart Summaries
+The AI generates a 2-sentence overview of your tasks and suggests the next best action.
+
+### AI Assistant
+Ask questions about your tasks and get intelligent responses based on your current todo list.
 
 ## API Endpoints
 
-### Standard Todo Endpoints
-- `POST /todos`
-  - Create a new todo
-  - Request body: `{"description": "string", "completed": false}`
+- `GET /` - Home page with the todo app interface
+- `POST /todos` - Create a new todo
+- `GET /todos` - Get all todos
+- `GET /todos/{id}` - Get a specific todo
+- `PUT /todos/{id}` - Update a specific todo
+- `DELETE /todos/{id}` - Delete a specific todo
+- `POST /api/tasks/summary` - Get AI-generated task summary
+- `POST /api/chat` - Chat with the AI assistant
 
-- `GET /todos`
-  - Retrieve all todos
-  - Query parameters: `skip` (default 0), `limit` (default 100)
+## Environment Variables
 
-- `GET /todos/{id}`
-  - Retrieve a single todo by ID
+- `HUGGINGFACEHUB_API_TOKEN` - Your Hugging Face API token for AI model access
 
-- `PUT /todos/{id}`
-  - Update a todo
-  - Request body: `{"description": "string", "completed": false}`
+## Contributing
 
-- `DELETE /todos/{id}`
-  - Delete a specific todo by ID
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- `PATCH /todos/{id}`
-  - Update todo completion status
-  - Request body: `{"completed": true}`
+## License
 
-### AI-Enhanced Endpoints
-- `POST /api/chat`
-  - Chat with AI about your tasks
-  - Request body: `{"query": "your question", "selected_text": "optional context"}`
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-- `POST /api/tasks/summary`
-  - Generate AI summary of all tasks
-  - No request body required
+## Acknowledgments
 
-## AI Configuration
-
-### Using OpenAI
-1. Get an API key from OpenAI
-2. Set the `OPENAI_API_KEY` environment variable
-
-### Using Anthropic (Claude)
-1. Get an API key from Anthropic
-2. Set the `ANTHROPIC_API_KEY` environment variable
-3. Set `USE_ANTHROPIC=true`
-
-### Using Local Models (Ollama)
-1. Install and run Ollama
-2. Pull a model: `ollama pull llama2`
-3. Set environment variables:
-   ```
-   USE_LOCAL_MODEL=true
-   LOCAL_MODEL_PATH=/path/to/your/local/model
-   ```
-
-### Using Qdrant Vector Database
-1. Set up Qdrant (can be local or cloud)
-2. Set the `QDRANT_URL` and `QDRANT_API_KEY` environment variables (if using cloud)
-
-## Testing
-
-Run the test script to verify all endpoints work correctly:
-```bash
-python test_ai_endpoints.py
-```
-
-## Notes
-- All data is stored persistently in SQLite database.
-- The project strictly follows Constitution → Spec → Plan → Tasks → Implement.
-- The database file will be created as `todos.db` in the project directory.
-- AI features are optional and don't affect existing functionality.
-- Natural language processing uses RAG (Retrieval-Augmented Generation) for contextual responses.
+- FastAPI for the excellent web framework
+- Hugging Face for the AI models
+- Qdrant for vector storage
+- Tailwind CSS for styling
