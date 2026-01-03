@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-import models
+from . import models
 
 def get_todo(db: Session, todo_id: int):
     return db.query(models.TodoDB).filter(models.TodoDB.id == todo_id).first()

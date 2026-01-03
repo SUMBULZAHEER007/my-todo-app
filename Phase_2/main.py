@@ -1,4 +1,11 @@
 import os
+import sys
+from pathlib import Path
+
+# Add the current directory to the Python path to handle imports when running from root
+current_dir = Path(__file__).parent.absolute()
+sys.path.insert(0, str(current_dir))
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -9,12 +16,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
 # Local files imports
-import database
-import models
-import crud
-from ai_interface import get_ai_model
-# YAHAN IMPORT ADD KIYA HAI (Zaroori)
-import rag_service 
+from . import database
+from . import models
+from . import crud
+from .ai_interface import get_ai_model
+from . import rag_service
 
 load_dotenv()
 
@@ -32,8 +38,8 @@ app.add_middleware(
 )
 
 # Render ke liye path fix (Phase_2 folder ko handle karne ke liye)
-current_dir = os.path.dirname(os.path.abspath(__file__))
-static_path = os.path.join(current_dir, "static")
+static_dir = os.path.dirname(os.path.abspath(__file__))
+static_path = os.path.join(static_dir, "static")
 
 if os.path.exists(static_path):
     app.mount("/static", StaticFiles(directory=static_path), name="static")
@@ -84,6 +90,7 @@ def get_task_summary():
         db.close()
 
 if __name__ == "__main__":
-    # Render ke liye port aur host update
+    import os
+    # Railway ya Render se port uthayen, warna default 8000
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
