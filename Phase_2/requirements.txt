@@ -1,5 +1,5 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 python-dotenv
 python-multipart
@@ -11,5 +11,4 @@ langchain-qdrant
 langsmith
 qdrant-client
 requests
-numpy>=1.26.0
 setuptools
