@@ -6,101 +6,84 @@ from typing import List
 import uvicorn
 from dotenv import load_dotenv
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 
 # Local files imports
 import database
 import models
 import crud
 from ai_interface import get_ai_model
+# YAHAN IMPORT ADD KIYA HAI (Zaroori)
+import rag_service 
 
-# Environment variables load karein (.env file se)
 load_dotenv()
 
-# Database tables create karna (Phase II)
+# Database tables create karna
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="Todo App - Phase 2", version="1.0.0")
+app = FastAPI(title="Sumbul Zaheer - Phase 2 AI Todo", version="1.0.0")
 
-# Add CORS middleware to allow frontend-backend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your frontend domain
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Render ke liye path fix (Phase_2 folder ko handle karne ke liye)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_path = os.path.join(current_dir, "static")
 
-# Dependency: Database session management
-def get_db():
+if os.path.exists(static_path):
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+def read_root():
+    index_file = os.path.join(static_path, "index.html")
+    if os.path.exists(index_file):
+        with open(index_file) as f:
+            return f.read()
+    return "<h1>Phase 2 API is running. index.html not found in static folder.</h1>"
+
+# --- Phase I: CRUD Endpoints ---
+
+@app.post("/todos", response_model=models.TodoResponse, status_code=status.HTTP_201_CREATED)
+def create_todo(todo: models.TodoCreate, db: Session = Depends(database.get_db if hasattr(database, 'get_db') else lambda: database.SessionLocal())):
+    db_session = database.SessionLocal()
+    try:
+        return crud.create_todo(db=db_session, todo=todo)
+    finally:
+        db_session.close()
+
+@app.get("/todos", response_model=List[models.TodoResponse])
+def read_todos(skip: int = 0, limit: int = 100):
     db = database.SessionLocal()
     try:
-        yield db
+        return crud.get_todos(db, skip=skip, limit=limit)
     finally:
         db.close()
 
-# -------------------------------
-# Home Route
-# -------------------------------
-@app.get("/")
-def read_root():
-    from fastapi.responses import HTMLResponse
-    with open("static/index.html") as f:
-        content = f.read()
-    return HTMLResponse(content=content)
-
-# -------------------------------
-# Phase I: CRUD Endpoints
-# -------------------------------
-
-@app.post("/todos", response_model=models.TodoResponse, status_code=status.HTTP_201_CREATED)
-def create_todo(todo: models.TodoCreate, db: Session = Depends(get_db)):
-    return crud.create_todo(db=db, todo=todo)
-
-@app.get("/todos", response_model=List[models.TodoResponse])
-def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_todos(db, skip=skip, limit=limit)
-
-@app.get("/todos/{todo_id}", response_model=models.TodoResponse)
-def read_todo(todo_id: int, db: Session = Depends(get_db)):
-    db_todo = crud.get_todo(db, todo_id=todo_id)
-    if db_todo is None:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return db_todo
-
-@app.put("/todos/{todo_id}", response_model=models.TodoResponse)
-def update_todo(todo_id: int, todo: models.TodoUpdate, db: Session = Depends(get_db)):
-    db_todo = crud.update_todo(db, todo_id=todo_id, todo_update=todo)
-    if db_todo is None:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return db_todo
-
-@app.delete("/todos/{todo_id}")
-def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    success = crud.delete_todo(db, todo_id=todo_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return {"detail": "Todo deleted successfully"}
-
-# -------------------------------
-# Phase II: AI Summary Endpoint
-# -------------------------------
+# --- Phase II: AI Summary Endpoint ---
 
 @app.post("/api/tasks/summary")
-def get_task_summary(db: Session = Depends(get_db)):
+def get_task_summary():
+    db = database.SessionLocal()
     try:
         ai_model = get_ai_model()
+        # rag_service ab sahi kaam karega kyunke import upar add kar diya hai
         full_context = rag_service.create_context_from_todos(db)
 
-        # Create a more specific prompt for a 2-sentence summary
         prompt = f"System: Provide a clear, 2-sentence overview of the following todo list and suggest the next best action.\n\nTasks:\n{full_context}\n\nSummary:"
         response = ai_model.generate_response(prompt)
         return {"summary": response}
     except Exception as e:
-        print(f"Task summary endpoint error: {str(e)}")  # Log the error for debugging
-        return {"summary": "AI is thinking... Please try again later."}
+        print(f"Task summary error: {str(e)}")
+        return {"summary": "AI is setting up... Please add a task and try again."}
+    finally:
+        db.close()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    # Render ke liye port aur host update
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)

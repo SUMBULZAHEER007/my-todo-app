@@ -226,6 +226,11 @@
         let todos = [];
         let selectedText = '';
 
+        // Determine API base URL based on environment
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? ''  // Use relative URLs for local development
+            : 'https://your-render-backend-url.onrender.com';  // Replace with your actual Render URL
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
             loadTodos();
@@ -238,7 +243,7 @@
                 loadingTodos.classList.remove('hidden');
                 emptyState.classList.add('hidden');
 
-                const response = await fetch('/todos');
+                const response = await fetch(`${API_BASE_URL}/todos`);
                 if (!response.ok) throw new Error('Failed to load todos');
 
                 todos = await response.json();
