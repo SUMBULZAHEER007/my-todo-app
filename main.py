@@ -118,7 +118,7 @@ def chat_with_ai(query: str, selected_text: str = "", db: Session = Depends(get_
 
     except Exception as e:
         print(f"Chat endpoint error: {str(e)}")  # Log the error for debugging
-        return {"response": f"AI is currently unavailable. Please try again later. Error: {str(e)}"}
+        return {"response": f"AI is thinking... please try again later."}
 
 @app.post("/api/tasks/summary")
 def get_task_summary(db: Session = Depends(get_db)):
@@ -127,8 +127,18 @@ def get_task_summary(db: Session = Depends(get_db)):
         full_context = rag_service.create_context_from_todos(db)
 
         # Create a more specific prompt for a 2-sentence summary
-        prompt = f"System: Provide a clear, 2-sentence overview of the following todo list and suggest the next best action.\n\nTasks:\n{full_context}\n\nSummary:"
+        prompt = f"System: Write exactly 2 sentences summarizing the following tasks. Be concise and professional.\n\nTasks:\n{full_context}\n\nSummary:"
         response = ai_model.generate_response(prompt)
+
+        # Ensure the response contains exactly 2 sentences as per specification
+        sentences = response.split('.')
+        if len(sentences) >= 2:
+            # Take the first two sentences and join them back
+            response = '.'.join(sentences[:2]) + '.'
+        else:
+            # If there's only one sentence, keep it as is
+            response = sentences[0] + '.' if sentences[0] else "Your task list is up to date."
+
         return {"summary": response}
     except Exception as e:
         print(f"Task summary endpoint error: {str(e)}")  # Log the error for debugging
