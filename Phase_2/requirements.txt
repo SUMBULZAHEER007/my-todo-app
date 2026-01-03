@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy
+python-dotenv
+python-multipart
+huggingface-hub
+langchain
+langchain-community
+langchain-huggingface
+langchain-qdrant
+langsmith
+qdrant-client
+requests
+numpy>=1.26.0
+setuptools
