@@ -1,20 +1,20 @@
-numpy==1.24.4
+numpy>=1.21.0
 
-fastapi==0.115.0
-uvicorn==0.32.0
-sqlalchemy==2.0.35
-python-dotenv==1.0.1
-python-multipart==0.0.20
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-dotenv
+python-multipart
 
-langchain==0.3.4
-langchain-community==0.3.3
-langchain-huggingface==0.1.2
-langchain-qdrant==0.1.4
-langsmith==0.1.112
+langchain
+langchain-community
+langchain-huggingface
+langchain-qdrant
+langsmith
 
-qdrant-client==1.12.0
-huggingface-hub==0.26.2
-openai==1.54.0
+qdrant-client
+huggingface-hub
+openai
 
 # Additional dependencies for AI features
-requests==2.32.3
+requests
